@@ -2,12 +2,20 @@ import ast
 import math
 
 class CalculatorLogic:
+    """Handles the logic for the calculator."""
     def __init__(self):
+        """Initializes the calculator's state."""
         self.expression = ""
         self.result = ""
         self.memory = 0
 
     def on_button_press(self, value: str) -> None:
+        """
+        Handles a button press event.
+
+        Args:
+            value: The value of the button that was pressed.
+        """
         if value == "AC":
             self.expression = ""
             self.result = ""
@@ -39,6 +47,12 @@ class CalculatorLogic:
             self.expression += value
 
     def _handle_memory(self, value: str):
+        """
+        Handles memory-related button presses.
+
+        Args:
+            value: The memory button that was pressed.
+        """
         try:
             current_val = float(self.get_display_text())
         except ValueError:
@@ -54,6 +68,18 @@ class CalculatorLogic:
             self.memory -= current_val
 
     def _evaluate_expression(self, expression: str) -> float:
+        """
+        Safely evaluates a mathematical expression.
+
+        Args:
+            expression: The expression to evaluate.
+
+        Returns:
+            The result of the evaluation.
+        
+        Raises:
+            ValueError: If the expression is invalid.
+        """
         try:
             # Replace user-friendly symbols with Python operators
             expression = expression.replace("√", "sqrt")
@@ -68,6 +94,18 @@ class CalculatorLogic:
             raise ValueError("Invalid expression") from e
 
     def _eval_node(self, node):
+        """
+        Recursively evaluates a node in the AST.
+
+        Args:
+            node: The node to evaluate.
+
+        Returns:
+            The result of the evaluation.
+
+        Raises:
+            ValueError: If the node type is not supported.
+        """
         if isinstance(node, ast.Num):
             return node.n
         elif isinstance(node, ast.BinOp):
@@ -97,6 +135,9 @@ class CalculatorLogic:
         raise ValueError(f"Unsupported node type: {type(node)}")
 
     def _get_safe_functions(self):
+        """
+        Returns a dictionary of safe functions to use in the evaluation.
+        """
         return {
             'sqrt': math.sqrt,
             'sin': math.sin,
@@ -107,5 +148,8 @@ class CalculatorLogic:
         }
 
     def get_display_text(self) -> str:
+        """
+        Returns the text to display on the calculator screen.
+        """
         return self.result or self.expression or "0"
 
